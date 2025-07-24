@@ -30,6 +30,7 @@ var direction: = 0.0
 var visible_chars = {}
 var character: Character
 var state_machine: FiniteStateMachine
+var push_timer = 0.0
 
 func _ready():
 	character = Character.new()
@@ -50,10 +51,11 @@ func _ready():
 	state_machine.set_property("visible_chars", visible_chars)
 
 func _physics_process(delta: float) -> void:
+	push_timer -= delta
 	character.set_raycast_point(global_position)
 	
-	if not character.is_alive():
-		velocity = Vector2(0.0, 10.0)
+	if not character.is_alive() or push_timer > 0.0:
+		velocity += Vector2(0.0, 1.0)
 		move_and_slide()
 		return
 	
@@ -93,6 +95,7 @@ func on_vision_body_exited(body: Object):
 
 func on_push(vel: Vector2):
 	velocity = vel
+	push_timer = 0.3
 
 func on_damage(value: float):
 	health_label.text = str(int(character.health))

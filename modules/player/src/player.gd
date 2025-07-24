@@ -21,6 +21,7 @@ extends CharacterBody2D
 
 @onready var health_label: = $Health
 @onready var camera: = $Camera
+@onready var attack_anim_player: = $AttackPlayer
 
 # Internal variables
 var coyote_timer: = 0.0
@@ -57,6 +58,9 @@ func _physics_process(delta: float) -> void:
 	# Get input direction
 	direction = Input.get_axis("move_left", "move_right")
 	
+	# Handle attack inputs
+	handle_attack()
+	
 	# Handle horizontal movement
 	handle_movement(delta)
 	
@@ -82,6 +86,15 @@ func _physics_process(delta: float) -> void:
 	
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
+
+func handle_attack():
+	if not Input.is_action_just_pressed("attack"):
+		return
+	
+	if direction < 0.0:
+		attack_anim_player.play("attack_left")
+	else:
+		attack_anim_player.play("attack_right")
 
 # Checks all collisions and pushes characters if possible
 func check_characters_to_push():
