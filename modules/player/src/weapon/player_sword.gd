@@ -1,5 +1,7 @@
 extends Area2D
 
+signal kill_confirmed()
+
 func on_area_enter(body: Object):
 	if body == get_parent():
 		return
@@ -10,6 +12,8 @@ func on_area_enter(body: Object):
 	if char:
 		var push_dir = global_position.direction_to(char.raycast_point)
 		char.push(push_dir * 800.0)
+		if not char.is_alive():
+			kill_confirmed.emit()
 
 func _ready():
 	body_entered.connect(on_area_enter)

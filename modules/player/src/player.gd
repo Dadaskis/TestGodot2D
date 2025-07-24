@@ -22,6 +22,7 @@ extends CharacterBody2D
 @onready var health_label: = $Health
 @onready var camera: = $Camera
 @onready var attack_anim_player: = $AttackPlayer
+@onready var sword: = $Sword
 
 # Internal variables
 var coyote_timer: = 0.0
@@ -32,6 +33,7 @@ var direction: = 0.0
 var character: Character
 var health_HUD: HealthHUD
 var body_counter_HUD: BodyCounterHUD
+var body_count = 0
 
 func _ready():
 	character = Character.new()
@@ -46,6 +48,8 @@ func _ready():
 	health_HUD.set_amount(character.health)
 	
 	body_counter_HUD = HeadsUpDisplay.add_element("body_counter")
+	
+	sword.kill_confirmed.connect(add_body)
 
 func _physics_process(delta: float) -> void:
 	character.set_raycast_point(global_position)
@@ -86,6 +90,10 @@ func _physics_process(delta: float) -> void:
 	
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
+
+func add_body():
+	body_count += 1
+	body_counter_HUD.set_amount(body_count)
 
 func handle_attack():
 	if not Input.is_action_just_pressed("attack"):

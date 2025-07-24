@@ -21,6 +21,7 @@ const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 @onready var vision_area: = $Vision
 @onready var far_vision_area: = $FarVision
 @onready var attack_anim_player: = $AttackPlayer
+@onready var collision: = $Collision
 
 # Internal variables
 var jump_buffer_timer: = 0.0
@@ -56,8 +57,6 @@ func _physics_process(delta: float) -> void:
 	character.set_raycast_point(global_position)
 	
 	if not character.is_alive() or push_timer > 0.0:
-		velocity += Vector2(0.0, 1.0)
-		move_and_slide()
 		return
 	
 	state_machine.update(delta)
@@ -119,7 +118,7 @@ func on_damage(value: float):
 	health_label.text = str(int(character.health))
 
 func on_death():
-	pass
+	collision.queue_free()
 
 func check_possibility_to_go() -> void:
 	var can_go_further = true
