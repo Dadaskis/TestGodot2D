@@ -25,6 +25,5 @@ func remove_element(element_name: String):
 
 func reset():
 	for child in get_children():
-		child.name = "__REMOVED"
-		child.queue_free()
+		remove_child(child)
 	elements = []

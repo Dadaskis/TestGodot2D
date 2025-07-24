@@ -30,6 +30,7 @@ var is_jumping: = false
 var direction: = 0.0
 var character: Character
 var health_HUD: HealthHUD
+var body_counter_HUD: BodyCounterHUD
 
 func _ready():
 	character = Character.new()
@@ -38,8 +39,12 @@ func _ready():
 	character.on_damage.connect(on_damage)
 	character.on_death.connect(on_death)
 	
+	HeadsUpDisplay.reset()
+	
 	health_HUD = HeadsUpDisplay.add_element("health")
 	health_HUD.set_amount(character.health)
+	
+	body_counter_HUD = HeadsUpDisplay.add_element("body_counter")
 
 func _physics_process(delta: float) -> void:
 	if not character.is_alive():
@@ -87,6 +92,10 @@ func on_damage(value: float):
 
 func on_death():
 	print("Death!")
+	HeadsUpDisplay.reset()
+	var game_over_hud = HeadsUpDisplay.add_element("game_over") as GameOverHUD
+	await game_over_hud.on_finish
+	get_tree().reload_current_scene()
 
 func handle_movement(delta: float) -> void:
 	if direction != 0:
