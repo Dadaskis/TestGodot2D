@@ -18,6 +18,8 @@ const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 @onready var left_wall_ray: = $LeftWallCheck
 @onready var right_side_ray: = $RightSideCheck
 @onready var right_wall_ray: = $RightWallCheck
+@onready var vision_area: = $Vision
+@onready var far_vision_area: = $FarVision
 
 # Internal variables
 var jump_buffer_timer: = 0.0
@@ -25,6 +27,7 @@ var was_on_floor: = false
 var is_jumping: = false
 var needs_to_jump = false
 var direction: = 0.0
+var visible_chars = {}
 var character: Character
 var state_machine: FiniteStateMachine
 
@@ -36,11 +39,19 @@ func _ready():
 	character.on_death.connect(on_death)
 	character.on_push.connect(on_push)
 	
+	vision_area.body_entered.connect(on_vision_body_entered)
+	far_vision_area.body_exited.connect(on_vision_body_exited)
+	
+	visible_chars = {}
 	state_machine = FiniteStateMachine.new()
+	state_machine.character = character
 	state_machine.load_all_states_from_dir(LOGIC_STATES_PATH)
 	state_machine.switch_state("patrol")
+	state_machine.set_property("visible_chars", visible_chars)
 
 func _physics_process(delta: float) -> void:
+	character.set_raycast_point(global_position)
+	
 	if not character.is_alive():
 		velocity = Vector2(0.0, 10.0)
 		move_and_slide()
@@ -68,8 +79,20 @@ func _physics_process(delta: float) -> void:
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
 
+func on_vision_body_entered(body: Object):
+	var character = HitBodyTool.get_node_property(body, Character.OBJECT_NAME)
+	if character and (character != self.character):
+		var key = body.get_instance_id()
+		visible_chars[key] = character
+
+func on_vision_body_exited(body: Object):
+	var character = HitBodyTool.get_node_property(body, Character.OBJECT_NAME)
+	if character and (character != self.character):
+		var key = body.get_instance_id()
+		visible_chars.erase(key)
+
 func on_push(vel: Vector2):
-	velocity = vel * 2.0
+	velocity = vel
 
 func on_damage(value: float):
 	health_label.text = str(int(character.health))

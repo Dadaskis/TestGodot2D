@@ -1,6 +1,7 @@
 class_name State
 
 var properties = {}
+var character: Character
 
 signal switch_state(state_name)
 

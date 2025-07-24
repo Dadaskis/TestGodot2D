@@ -4,6 +4,7 @@ var states = {}
 var properties = {}
 var active_state: State
 var active_state_name = ""
+var character: Character
 
 func load_all_states_from_dir(path: String):
 	var files = DirAccess.get_files_at(path)
@@ -22,6 +23,7 @@ func load_all_states_from_dir(path: String):
 
 func register_state(state_name: String, state: State):
 	state.properties = properties
+	state.character = character
 	state.on_register()
 	state.switch_state.connect(switch_state)
 	states[state_name] = state

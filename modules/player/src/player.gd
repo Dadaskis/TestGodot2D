@@ -47,6 +47,8 @@ func _ready():
 	body_counter_HUD = HeadsUpDisplay.add_element("body_counter")
 
 func _physics_process(delta: float) -> void:
+	character.set_raycast_point(global_position)
+	
 	if not character.is_alive():
 		velocity = Vector2(0.0, 10.0)
 		move_and_slide()
@@ -91,7 +93,7 @@ func check_characters_to_push():
 		var character = \
 			HitBodyTool.get_node_property(collider, Character.OBJECT_NAME)
 		if character:
-			character.push(velocity)
+			character.push(velocity * 2.0)
 
 func update_camera(delta):
 	camera.global_position = lerp(
