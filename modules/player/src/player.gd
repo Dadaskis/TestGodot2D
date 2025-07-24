@@ -72,11 +72,26 @@ func _physics_process(delta: float) -> void:
 	# Updates camera position smoothly
 	update_camera(delta)
 	
+	# Pushing others
+	check_characters_to_push()
+	
 	# Move the character
 	move_and_slide()
 	
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
+
+# Checks all collisions and pushes characters if possible
+func check_characters_to_push():
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		if not collider:
+			continue
+		var character = \
+			HitBodyTool.get_node_property(collider, Character.OBJECT_NAME)
+		if character:
+			character.push(velocity)
 
 func update_camera(delta):
 	camera.global_position = lerp(

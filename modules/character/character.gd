@@ -51,6 +51,9 @@ signal on_damage(value)
 # value - Current amount of armor
 # difference - Difference of current and previous values. Always a positive number.
 signal on_armor_change(value, difference)
+# Emitted when this character is getting pushed
+# velocity - Direction to which character should be pushed
+signal on_push(velocity)
 
 # Restore this character's health by setting it on maximum health
 func restore_health():
@@ -140,6 +143,9 @@ func make_alive() -> void:
 	alive = true
 	CharacterList.add_character(self)
 	set_health(max_health)
+
+func push(velocity: Vector2) -> void:
+	on_push.emit(velocity)
 
 # What kind of relationship this character has with another one?
 # Returns Faction.RelationshipType enum
