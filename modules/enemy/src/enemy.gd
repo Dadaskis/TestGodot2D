@@ -14,6 +14,10 @@ const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 @export var max_fall_speed: = 800.0
 
 @onready var health_label: = $Health
+@onready var left_side_ray: = $LeftSideCheck
+@onready var left_wall_ray: = $LeftWallCheck
+@onready var right_side_ray: = $RightSideCheck
+@onready var right_wall_ray: = $RightWallCheck
 
 # Internal variables
 var jump_buffer_timer: = 0.0
@@ -45,7 +49,7 @@ func _physics_process(delta: float) -> void:
 	state_machine.update(delta)
 	
 	# Get input direction
-	#direction = Input.get_axis("move_left", "move_right")
+	direction = state_machine.get_property("direction")
 	
 	# Handle horizontal movement
 	handle_movement(delta)
@@ -73,10 +77,32 @@ func on_damage(value: float):
 func on_death():
 	pass
 
+func check_possibility_to_go() -> void:
+	var can_go_further = true
+	if direction < 0.0:
+		can_go_further = \
+			left_side_ray.is_colliding() and not left_wall_ray.is_colliding()
+		if not can_go_further:
+			state_machine.set_property(
+				"patrol_dir", not state_machine.get_property("patrol_dir")
+			)
+	if direction > 0.0:
+		can_go_further = \
+			right_side_ray.is_colliding() and not right_wall_ray.is_colliding()
+		if not can_go_further:
+			state_machine.set_property(
+				"patrol_dir", not state_machine.get_property("patrol_dir")
+			)
+	if not can_go_further:
+		direction = 0.0
+
 func handle_movement(delta: float) -> void:
+	check_possibility_to_go()
+	
 	if direction != 0:
 		# Accelerate in the direction of input
 		var target_speed = direction * max_speed
+		target_speed *= state_machine.get_property("speed_mult")
 		var acceleration_to_use = acceleration
 		if not is_on_floor():
 			acceleration_to_use = air_resistance

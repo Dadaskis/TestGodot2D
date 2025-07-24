@@ -3,6 +3,7 @@ class_name FiniteStateMachine
 var states = {}
 var properties = {}
 var active_state: State
+var active_state_name = ""
 
 func load_all_states_from_dir(path: String):
 	var files = DirAccess.get_files_at(path)
@@ -32,6 +33,7 @@ func switch_state(state_name: String):
 	if active_state:
 		active_state.before_switch()
 	active_state = state
+	active_state_name = state_name
 	state.switch()
 
 func set_property(key, value):
