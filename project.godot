@@ -27,7 +27,13 @@ HeadsUpDisplay="*res://modules/heads_up_display/assets/main_screen/heads_up_disp
 
 folder_colors={
 "res://game_levels/": "blue",
-"res://modules/": "red"
+"res://modules/": "red",
+"res://modules/character/": "teal",
+"res://modules/enemy/": "gray",
+"res://modules/finite_state_machine/": "green",
+"res://modules/heads_up_display/": "yellow",
+"res://modules/hit_body/": "purple",
+"res://modules/player/": "blue"
 }
 
 [input]
