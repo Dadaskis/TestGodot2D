@@ -43,6 +43,7 @@ func _ready():
 	CharacterTools.init_damageable(character, self)
 	character.on_damage.connect(on_damage)
 	character.on_death.connect(on_death)
+	character.set_meta_data("is_player", true)
 	
 	HeadsUpDisplay.reset()
 	
