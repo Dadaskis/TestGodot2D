@@ -20,6 +20,7 @@ const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 @onready var right_wall_ray: = $RightWallCheck
 @onready var vision_area: = $Vision
 @onready var far_vision_area: = $FarVision
+@onready var attack_anim_player: = $AttackPlayer
 
 # Internal variables
 var jump_buffer_timer: = 0.0
@@ -64,6 +65,9 @@ func _physics_process(delta: float) -> void:
 	# Get input direction
 	direction = state_machine.get_property("direction")
 	
+	# Handle attacks
+	handle_attack()
+	
 	# Handle horizontal movement
 	handle_movement(delta)
 	
@@ -80,6 +84,20 @@ func _physics_process(delta: float) -> void:
 	
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
+
+func handle_attack():
+	if not state_machine.get_property("attack_required"):
+		return
+	
+	if attack_anim_player.is_playing():
+		return
+	
+	state_machine.set_property("attack_required", false)
+	
+	if direction < 0.0:
+		attack_anim_player.play("attack_left")
+	else:
+		attack_anim_player.play("attack_right")
 
 func on_vision_body_entered(body: Object):
 	var character = HitBodyTool.get_node_property(body, Character.OBJECT_NAME)

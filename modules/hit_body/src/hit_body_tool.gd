@@ -48,10 +48,10 @@ func add_node_property(node, hit_name: String, value):
 	# Add the specified property
 	hit_body.add_hit_property(hit_name, value)
 
-# Retrieves a property from a node's hit body
-# node: The node to query
-# hit_name: String identifier of the property to retrieve
-# Returns: The HitBodyProperty or null if not found
+## Retrieves a property from a node's hit body [br]
+## node: The node to query [br]
+## hit_name: String identifier of the property to retrieve [br]
+## Returns: The HitBodyProperty or null if not found
 func get_node_property(node: Object, hit_name: String):
 	var hit_body = hit_bodies.get(node.get_instance_id(), null)
 	if not hit_body:

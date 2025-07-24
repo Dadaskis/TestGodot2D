@@ -91,6 +91,9 @@ func handle_attack():
 	if not Input.is_action_just_pressed("attack"):
 		return
 	
+	if attack_anim_player.is_playing():
+		return
+	
 	if direction < 0.0:
 		attack_anim_player.play("attack_left")
 	else:

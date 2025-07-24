@@ -16,3 +16,6 @@ func on_update(delta: float):
 		set_property("direction", 1.0)
 	else:
 		set_property("direction", -1.0)
+	var dist = pos0.distance_squared_to(pos1)
+	if dist < 23000.0:
+		set_property("attack_required", true)
