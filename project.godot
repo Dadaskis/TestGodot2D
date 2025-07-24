@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Test Godot 2D"
+run/main_scene="uid://crbwv66cv03ts"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -20,6 +21,7 @@ HitBodyTool="*res://modules/hit_body/src/hit_body_tool.gd"
 CharacterList="*res://modules/character/character_list.gd"
 Factions="*res://modules/character/factions.gd"
 CharacterTools="*res://modules/character/character_tools.gd"
+HeadsUpDisplay="*res://modules/heads_up_display/assets/main_screen/heads_up_display.scn"
 
 [file_customization]
 

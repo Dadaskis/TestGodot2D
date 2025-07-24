@@ -19,6 +19,16 @@ position = Vector2(3.8147e-06, 3.8147e-06)
 scale = Vector2(0.460937, 0.851562)
 texture = ExtResource("2_dxh3w")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera" type="Camera2D" parent="."]
+top_level = true
 offset = Vector2(0, -200)
 zoom = Vector2(0.535, 0.535)
+
+[node name="Health" type="Label" parent="."]
+offset_left = -59.0
+offset_top = -151.0
+offset_right = 59.0
+offset_bottom = -109.0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
