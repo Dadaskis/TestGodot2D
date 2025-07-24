@@ -23,5 +23,5 @@ func _physics_process(delta: float) -> void:
 		dmg.damage(10.0)
 
 func _ready():
-	connect("body_entered", on_area_enter)
-	connect("body_exited", on_area_exit)
+	body_entered.connect(on_area_enter)
+	body_exited.connect(on_area_exit)

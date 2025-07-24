@@ -52,8 +52,8 @@ func on_init():
 # author: Optional reference to damage source object
 func damage(value: float, 
 		damage_type: = DamageType.GENERIC,
-		position: = Vector3.ZERO,
-		direction: = Vector3.ZERO,
+		position: = Vector2.ZERO,
+		direction: = Vector2.ZERO,
 		author = null) -> void:
 	# Emit signal by default - derived classes should add actual damage logic
 	emit_signal("on_damage", value)

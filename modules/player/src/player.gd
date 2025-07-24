@@ -1,39 +1,44 @@
 extends CharacterBody2D
 
 # Movement parameters
-@export var max_speed := 300.0
-@export var acceleration := 2000.0
-@export var friction := 2000.0
-@export var air_resistance := 500.0
+@export var max_speed: = 300.0
+@export var acceleration: = 2000.0
+@export var friction: = 2000.0
+@export var air_resistance: = 500.0
 
 # Jump parameters
-@export var jump_force := 600.0
-@export var gravity := 1200.0
-@export var max_fall_speed := 800.0
+@export var jump_force: = 600.0
+@export var gravity: = 1200.0
+@export var max_fall_speed: = 800.0
 # Reduce jump height when releasing jump early
-@export var variable_jump_reduction := 0.5
+@export var variable_jump_reduction: = 0.5
 
 # Player feel improvements
 # Time after leaving ledge when you can still jump
-@export var coyote_time := 0.1
+@export var coyote_time: = 0.1
 # Time before landing when jump input is remembered
-@export var jump_buffer_time := 0.1
+@export var jump_buffer_time: = 0.1
 
 # Internal variables
-var coyote_timer := 0.0
-var jump_buffer_timer := 0.0
-var was_on_floor := false
-var is_jumping := false
-var direction := 0.0
-var damageable: Damageable
+var coyote_timer: = 0.0
+var jump_buffer_timer: = 0.0
+var was_on_floor: = false
+var is_jumping: = false
+var direction: = 0.0
+var character: Character
 
 func _ready():
-	damageable = Damageable.new()
-	HitBodyTool.add_node_property(self, Damageable.OBJECT_NAME, damageable)
-	damageable.connect("on_damage", on_damage)
+	character = Character.new()
+	HitBodyTool.add_node_property(self, Character.OBJECT_NAME, character)
+	CharacterTools.init_damageable(character, self)
+	character.on_damage.connect(on_damage)
+	character.on_death.connect(on_death)
 
 func on_damage(value: float):
 	print("Taking damage: " + str(value))
+
+func on_death():
+	print("Death!")
 
 func _physics_process(delta: float) -> void:
 	# Get input direction
