@@ -22,7 +22,9 @@ extends CharacterBody2D
 @onready var health_label: = $Health
 @onready var camera: = $Camera
 @onready var attack_anim_player: = $AttackPlayer
+@onready var damage_anim_player: = $DamagePlayer
 @onready var sword: = $Sword
+@onready var collision: = $Collision
 
 # Internal variables
 var coyote_timer: = 0.0
@@ -55,8 +57,6 @@ func _physics_process(delta: float) -> void:
 	character.set_raycast_point(global_position)
 	
 	if not character.is_alive():
-		velocity = Vector2(0.0, 10.0)
-		move_and_slide()
 		return
 	
 	# Get input direction
@@ -130,9 +130,12 @@ func on_damage(value: float):
 	print("Taking damage: " + str(value))
 	health_label.text = str(int(character.health))
 	health_HUD.set_amount(character.health)
+	damage_anim_player.play("damage")
 
 func on_death():
 	print("Death!")
+	collision.queue_free()
+	damage_anim_player.play("death")
 	HeadsUpDisplay.reset()
 	var game_over_hud = HeadsUpDisplay.add_element("game_over") as GameOverHUD
 	await game_over_hud.on_finish

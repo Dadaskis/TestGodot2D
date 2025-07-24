@@ -85,8 +85,8 @@ func damage(
 	last_damage_type = damage_type
 	last_damage_amount = value
 	last_damage_author = damage_author
-	add_health(-value)
 	emit_signal("on_damage", value)
+	add_health(-value)
 
 # Add health to this character
 func add_health(health: float) -> void:
