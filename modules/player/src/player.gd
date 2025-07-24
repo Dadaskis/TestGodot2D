@@ -25,6 +25,15 @@ var jump_buffer_timer := 0.0
 var was_on_floor := false
 var is_jumping := false
 var direction := 0.0
+var damageable: Damageable
+
+func _ready():
+	damageable = Damageable.new()
+	HitBodyTool.add_node_property(self, Damageable.OBJECT_NAME, damageable)
+	damageable.connect("on_damage", on_damage)
+
+func on_damage(value: float):
+	print("Taking damage: " + str(value))
 
 func _physics_process(delta: float) -> void:
 	# Get input direction
@@ -54,11 +63,15 @@ func handle_movement(delta: float) -> void:
 	if direction != 0:
 		# Accelerate in the direction of input
 		var target_speed = direction * max_speed
-		var acceleration_to_use = acceleration if is_on_floor() else air_resistance
+		var acceleration_to_use = acceleration
+		if not is_on_floor():
+			acceleration_to_use = air_resistance
 		velocity.x = move_toward(velocity.x, target_speed, acceleration_to_use * delta)
 	else:
 		# Apply friction when no input
-		var resistance_to_use = friction if is_on_floor() else air_resistance
+		var resistance_to_use = friction
+		if not is_on_floor():
+			resistance_to_use = air_resistance
 		velocity.x = move_toward(velocity.x, 0, resistance_to_use * delta)
 
 func handle_jumping(delta: float) -> void:
