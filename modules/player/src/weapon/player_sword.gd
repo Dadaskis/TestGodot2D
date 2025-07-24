@@ -1,7 +1,12 @@
+## Player's sword that is simply a sophisticated Area2D
+
 extends Area2D
 
+## Emitted when another character is killed
 signal kill_confirmed()
 
+## Checks for other damageables and damages them [br]
+## If there's a killed character - it'll emit kill_confirmed signal
 func on_area_enter(body: Object):
 	if body == get_parent():
 		return
@@ -15,5 +20,6 @@ func on_area_enter(body: Object):
 		if not char.is_alive():
 			kill_confirmed.emit()
 
+## Connects signals
 func _ready():
 	body_entered.connect(on_area_enter)

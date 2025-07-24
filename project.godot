@@ -19,7 +19,6 @@ config/icon="res://icon.svg"
 
 HitBodyTool="*res://modules/hit_body/src/hit_body_tool.gd"
 CharacterList="*res://modules/character/character_list.gd"
-Factions="*res://modules/character/factions.gd"
 CharacterTools="*res://modules/character/character_tools.gd"
 HeadsUpDisplay="*res://modules/heads_up_display/assets/main_screen/heads_up_display.scn"
 

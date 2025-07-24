@@ -1,34 +1,34 @@
-# __AUTOLOAD
-# Singleton manager for hit body properties in the game
-# Maintains registry of all interactive objects and their collision properties
-#
-# [Use examples]
-#
-# Getting a hit body property:
-# [gd]
-# var usable = HitBodyTool.get_node_property(body, Usable.OBJECT_NAME)
-# if usable:
-# # ...
-# [/gd]
-#
-# Setting a hit body property:
-# [gd]
-# # Keep in mind, node property can be assigned to any object.
-# # But usually it makes sense to assign it to a physics body
-# # like StaticBody, RigidBody, etc.
-# # Because you can get it in later physics checks like raycasts.
-# HitBodyTool.add_node_property(body, Usable.OBJECT_NAME, usable)
-# [/gd]
+## __AUTOLOAD [br]
+## Singleton manager for hit body properties in the game [br]
+## Maintains registry of all interactive objects and their collision properties [br]
+## [br]
+## [Use examples] [br]
+## [br]
+## Getting a hit body property: [br]
+## [gd] [br]
+## var usable = HitBodyTool.get_node_property(body, Usable.OBJECT_NAME) [br]
+## if usable: [br]
+## # ... [br]
+## [/gd] [br]
+## [br]
+## Setting a hit body property: [br]
+## [gd] [br]
+## # Keep in mind, node property can be assigned to any object. [br]
+## # But usually it makes sense to assign it to a physics body [br]
+## # like StaticBody, RigidBody, etc. [br]
+## # Because you can get it in later physics checks like raycasts. [br]
+## HitBodyTool.add_node_property(body, Usable.OBJECT_NAME, usable) [br]
+## [/gd]
 
 extends Node
 
-# Dictionary storing all hit bodies keyed by instance ID
+## Dictionary storing all hit bodies keyed by instance ID
 var hit_bodies = {}
 
-# Adds a new property to a node's hit body
-# node: The target node to receive the property
-# hit_name: String identifier for the property type
-# value: HitBodyProperty instance to add
+## Adds a new property to a node's hit body [br]
+## node: The target node to receive the property [br]
+## hit_name: String identifier for the property type [br]
+## value: HitBodyProperty instance to add
 func add_node_property(node, hit_name: String, value):
 	if not value:
 		push_error("Value is null")
@@ -58,7 +58,7 @@ func get_node_property(node: Object, hit_name: String):
 		return null
 	return hit_body.get_hit_property(hit_name)
 
-# Cleans up invalid/destroyed hit body references
+## Cleans up invalid/destroyed hit body references
 func validate_hit_bodies():
 	for hit_body_key in hit_bodies.keys():
 		var hit_body = hit_bodies[hit_body_key]

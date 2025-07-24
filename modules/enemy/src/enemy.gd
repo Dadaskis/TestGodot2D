@@ -1,40 +1,66 @@
 extends CharacterBody2D
 
+## Folder containing all logic states
 const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 
-# Movement parameters
+## Maximum movement speed
 @export var max_speed: = 300.0
+## Movement acceleration
 @export var acceleration: = 2000.0
+## Movement friction
 @export var friction: = 2000.0
+## Air resistance when in air
 @export var air_resistance: = 500.0
-
-# Jump parameters
+## Jump force
 @export var jump_force: = 600.0
+## Gravity force
 @export var gravity: = 1200.0
+## Maximum falling speed
 @export var max_fall_speed: = 800.0
-
+## Health 2D label above the enemy
 @onready var health_label: = $Health
+## Checks if there's any gap on the left
 @onready var left_side_ray: = $LeftSideCheck
+## Checks if there's any wall on the left
 @onready var left_wall_ray: = $LeftWallCheck
+## Checks if there's any gap on the right
 @onready var right_side_ray: = $RightSideCheck
+## Checks if there's any wall on the right
 @onready var right_wall_ray: = $RightWallCheck
+## Checks if there's any other character near-by
 @onready var vision_area: = $Vision
+## Checks if other character has left the vision field
 @onready var far_vision_area: = $FarVision
+## Spear animations
 @onready var attack_anim_player: = $AttackPlayer
+## Damage/Death animations
 @onready var damage_anim_player: = $DamagePlayer
+## Collision shape to remove on death
 @onready var collision: = $Collision
 
-# Internal variables
+## Jump buffer
 var jump_buffer_timer: = 0.0
+## Was the controller on floor?
 var was_on_floor: = false
+## Is jumping now?
 var is_jumping: = false
+## Does it need to jump?
 var needs_to_jump = false
+## Walking direction
 var direction: = 0.0
+## Dictionary of all visible characters
 var visible_chars = {}
+## Character data
 var character: Character
+## State machine for AI
 var state_machine: FiniteStateMachine
+## Concussion timer, disables logic after getting pushed
 var push_timer = 0.0
 
+## Initializing the character [br]
+## 1. Preparing character data [br]
+## 2. Connecting signals [br]
+## 3. Preparing the state machine
 func _ready():
 	character = Character.new()
 	HitBodyTool.add_node_property(self, Character.OBJECT_NAME, character)
@@ -53,6 +79,7 @@ func _ready():
 	state_machine.switch_state("patrol")
 	state_machine.set_property("visible_chars", visible_chars)
 
+## Processing movement, attacks, push timers, etc
 func _physics_process(delta: float) -> void:
 	push_timer -= delta
 	character.set_raycast_point(global_position)
@@ -85,6 +112,7 @@ func _physics_process(delta: float) -> void:
 	# Check if we just left the ground (for coyote time)
 	was_on_floor = is_on_floor()
 
+## Handles attacks upon need of the state machine
 func handle_attack():
 	if not state_machine.get_property("attack_required"):
 		return
@@ -99,32 +127,41 @@ func handle_attack():
 	else:
 		attack_anim_player.play("attack_right")
 
+## Checks all characters that entered the view
 func on_vision_body_entered(body: Object):
 	var character = HitBodyTool.get_node_property(body, Character.OBJECT_NAME)
 	if character and (character != self.character):
 		var key = body.get_instance_id()
 		visible_chars[key] = character
 
+## Forgers all characters that exited the far view
 func on_vision_body_exited(body: Object):
 	var character = HitBodyTool.get_node_property(body, Character.OBJECT_NAME)
 	if character and (character != self.character):
 		var key = body.get_instance_id()
 		visible_chars.erase(key)
 
+## Enables push timer after getting pushed, as well as applies velocity
 func on_push(vel: Vector2):
 	velocity = vel
 	push_timer = 0.3
 
+## Updates the health label and plays the damage animation
 func on_damage(value: float):
 	health_label.text = str(int(character.health))
 	damage_anim_player.play("damage")
 
+## Removes collision on death, plays animations, removes itself afterwards
 func on_death():
 	collision.queue_free()
 	damage_anim_player.play("death")
 	await damage_anim_player.animation_finished
 	queue_free()
 
+## Checks if it is possible to go further [br]
+## 1. Checks the gaps [br]
+## 2. Checks the walls [br]
+## If none - character can go further
 func check_possibility_to_go() -> void:
 	var can_go_further = true
 	if direction < 0.0:
@@ -144,6 +181,7 @@ func check_possibility_to_go() -> void:
 	if not can_go_further:
 		direction = 0.0
 
+## Handles movement depending on parameters of the state machine
 func handle_movement(delta: float) -> void:
 	check_possibility_to_go()
 	
@@ -163,6 +201,7 @@ func handle_movement(delta: float) -> void:
 			resistance_to_use = air_resistance
 		velocity.x = move_toward(velocity.x, 0, resistance_to_use * delta)
 
+## Handles jumping
 func handle_jumping(delta: float) -> void:
 	# Jump if pressed and either on floor or in coyote time
 	if can_jump():
@@ -179,5 +218,7 @@ func handle_jumping(delta: float) -> void:
 	if is_on_floor():
 		is_jumping = false
 
+## Can this character jump? [br]
+## Checks if on floor and if state machine asks to jump
 func can_jump() -> bool:
 	return is_on_floor() and needs_to_jump
