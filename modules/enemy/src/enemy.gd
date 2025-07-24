@@ -21,6 +21,7 @@ const LOGIC_STATES_PATH = "res://modules/enemy/src/states/"
 @onready var vision_area: = $Vision
 @onready var far_vision_area: = $FarVision
 @onready var attack_anim_player: = $AttackPlayer
+@onready var damage_anim_player: = $DamagePlayer
 @onready var collision: = $Collision
 
 # Internal variables
@@ -116,9 +117,13 @@ func on_push(vel: Vector2):
 
 func on_damage(value: float):
 	health_label.text = str(int(character.health))
+	damage_anim_player.play("damage")
 
 func on_death():
 	collision.queue_free()
+	damage_anim_player.play("death")
+	await damage_anim_player.animation_finished
+	queue_free()
 
 func check_possibility_to_go() -> void:
 	var can_go_further = true
